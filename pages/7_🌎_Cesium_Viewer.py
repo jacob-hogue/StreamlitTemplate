@@ -1,13 +1,12 @@
 import streamlit as st
-from streamlit_cesium import st_cesium
+import common
 
 def main():
     st.title("Interactive Cesium Globe Viewer")
 
     st.write("Welcome to the Cesium Globe Viewer! You can interact with the globe below.")
 
-    # Embed the Cesium viewer
-    cesium_viewer = st_cesium()
+    cesium_to_streamlit(
 
     st.write("Use your mouse to interact with the globe:")
     st.write("- Left-click and drag to rotate")
