@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Include the CesiumJS JavaScript and CSS files -->
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.114/Build/Cesium/Cesium.js"></script>
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.114/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+</head>
+<body>
+  <div id="cesiumContainer"></div>
+  <script type="module">
+    // Your access token can be found at: https://ion.cesium.com/tokens.
+    // This is the default access token from your ion account
+
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI2MmNmMjdlMC02Y2Q4LTQ1MDktYjNlZi01NzNmMTk0YzUyNWUiLCJpZCI6MTgyMTI4LCJpYXQiOjE3MDg2MTM2MjN9.VK-cEHkTqOOruilRi2KZU7la2brQbq0hBAFeZ3cC_Rk'
+
+    // Initialize the Cesium Viewer in the HTML element with the `cesiumContainer` ID.
+    const viewer = new Cesium.Viewer('cesiumContainer', {
+      terrain: Cesium.Terrain.fromWorldTerrain(),shouldAnimate: true,baseLayerPicker: false,
+    });  
+    viewer.scene.globe.enableLighting = true;
+    // Set a custom home button command
+viewer.homeButton.viewModel.command.beforeExecute.addEventListener(function (commandInfo) {
+    // Change this to your desired custom extent
+    var customExtent = Cesium.Rectangle.fromDegrees(
+        -102.78101168348607, 47.46682012844453, -101.82956700167696, 47.99582743302436
+    );
+
+    // Fly to the custom extent
+    viewer.camera.flyTo({
+        destination: customExtent,
+        duration: 2.0, // Adjust the duration as needed
+    });
+
+    // Tell the home button not to execute its default action
+    commandInfo.cancel = true;
+});
+   
+// Add Cesium OSM Buildings, a global 3D buildings layer.
+    const buildingTileset = await Cesium.createOsmBuildingsAsync();
+    viewer.scene.primitives.add(buildingTileset);  
+    const tileset = viewer.scene.primitives.add(
+  await Cesium.Cesium3DTileset.fromIonAssetId(2275207),
+);
+    const pinBuilder = new Cesium.PinBuilder();
+    const questionPin = viewer.entities.add({
+  name: "Elbowoods Memorial",
+  position: Cesium.Cartesian3.fromDegrees(-102.46990902799968,47.99130174114226,550),
+  billboard: {
+    image: pinBuilder.fromText("Elbowoods Memorial", Cesium.Color.BLACK, 200).toDataURL(),
+    verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+  },
+    });
+
+   
+// STEP 3 CODE (all points)
+// These are all the equally spaced points from this flight.
+const flightData = JSON.parse(
+'[{"longitude":-102.46990902799968,"latitude":47.99130174114226,"height":599.87},{"longitude":-102.46990902799968,"latitude":47.99130174114226,"height":660.83}, {"longitude":-102.4688211843,"latitude":47.9880928918,"height":700.00},{"longitude":-102.4671855477,"latitude":47.9846452141,"height":700.00},{"longitude":-102.4655501209,"latitude":47.9811975152,"height":700.00},{"longitude":-102.4639149038,"latitude":47.977749795,"height":700.00},{"longitude":-102.4622798965,"latitude":47.9743020535,"height":700.00},{"longitude":-102.4606450987,"latitude":47.9708542908,"height":700.00},{"longitude":-102.4590105106,"latitude":47.9674065069,"height":700.00},{"longitude":-102.4573761319,"latitude":47.9639587017,"height":700.00},{"longitude":-102.4557419627,"latitude":47.9605108753,"height":700.00},{"longitude":-102.454108003,"latitude":47.9570630277,"height":700.00},{"longitude":-102.4524742525,"latitude":47.9536151588,"height":700.00},{"longitude":-102.4508407113,"latitude":47.9501672688,"height":700.00},{"longitude":-102.4492073794,"latitude":47.9467193576,"height":700.00},{"longitude":-102.4475742566,"latitude":47.9432714252,"height":700.00},{"longitude":-102.445941343,"latitude":47.9398234716,"height":700.00},{"longitude":-102.4443086384,"latitude":47.9363754968,"height":700.00},{"longitude":-102.4426761428,"latitude":47.9329275009,"height":700.00},{"longitude":-102.4410438561,"latitude":47.9294794839,"height":700.00},{"longitude":-102.4394117783,"latitude":47.9260314457,"height":700.00},{"longitude":-102.4377799093,"latitude":47.9225833863,"height":700.00},{"longitude":-102.4361482491,"latitude":47.9191353059,"height":700.00},{"longitude":-102.4345167975,"latitude":47.9156872043,"height":700.00},{"longitude":-102.4328855547,"latitude":47.9122390816,"height":700.00},{"longitude":-102.4312545204,"latitude":47.9087909378,"height":700.00},{"longitude":-102.4296236946,"latitude":47.905342773,"height":700.00},{"longitude":-102.4279930773,"latitude":47.901894587,"height":700.00},{"longitude":-102.4263626684,"latitude":47.89844638,"height":700.00},{"longitude":-102.4247324679,"latitude":47.8949981519,"height":700.00},{"longitude":-102.4231024757,"latitude":47.8915499027,"height":700.00},{"longitude":-102.4214726917,"latitude":47.8881016325,"height":700.00},{"longitude":-102.4198431159,"latitude":47.8846533413,"height":700.00},{"longitude":-102.4182137482,"latitude":47.881205029,"height":700.00},{"longitude":-102.4165845886,"latitude":47.8777566957,"height":700.00},{"longitude":-102.414955637,"latitude":47.8743083414,"height":700.00},{"longitude":-102.4133268933,"latitude":47.8708599661,"height":700.00},{"longitude":-102.4116983576,"latitude":47.8674115698,"height":700.00},{"longitude":-102.4100700296,"latitude":47.8639631525,"height":700.00},{"longitude":-102.4084419095,"latitude":47.8605147142,"height":700.00},{"longitude":-102.406813997,"latitude":47.8570662549,"height":700.00},{"longitude":-102.4051862923,"latitude":47.8536177747,"height":700.00},{"longitude":-102.4035587951,"latitude":47.8501692735,"height":700.00},{"longitude":-102.4019315055,"latitude":47.8467207513,"height":700.00},{"longitude":-102.4003044233,"latitude":47.8432722082,"height":700.00},{"longitude":-102.3986775486,"latitude":47.8398236442,"height":700.00},{"longitude":-102.3970508813,"latitude":47.8363750593,"height":700.00},{"longitude":-102.3954244213,"latitude":47.8329264534,"height":700.00},{"longitude":-102.3937981685,"latitude":47.8294778267,"height":700.00},{"longitude":-102.392172123,"latitude":47.826029179,"height":700.00},{"longitude":-102.3905462845,"latitude":47.8225805105,"height":700.00},{"longitude":-102.3889206532,"latitude":47.8191318211,"height":700.00},{"longitude":-102.3872952289,"latitude":47.8156831108,"height":700.00},{"longitude":-102.3856700116,"latitude":47.8122343796,"height":700.00},{"longitude":-102.3840450012,"latitude":47.8087856276,"height":700.00},{"longitude":-102.3824201976,"latitude":47.8053368547,"height":700.00},{"longitude":-102.3807956008,"latitude":47.801888061,"height":700.00},{"longitude":-102.3791712108,"latitude":47.7984392464,"height":700.00},{"longitude":-102.3775470274,"latitude":47.7949904111,"height":700.00},{"longitude":-102.3759230507,"latitude":47.7915415549,"height":700.00},{"longitude":-102.3742992806,"latitude":47.7880926779,"height":700.00},{"longitude":-102.3726757169,"latitude":47.7846437801,"height":700.00},{"longitude":-102.3710523597,"latitude":47.7811948615,"height":700.00},{"longitude":-102.3694292089,"latitude":47.7777459221,"height":700.00},{"longitude":-102.3678062645,"latitude":47.774296962,"height":700.00},{"longitude":-102.3661835263,"latitude":47.7708479811,"height":700.00},{"longitude":-102.3645609944,"latitude":47.7673989794,"height":700.00},{"longitude":-102.3629386686,"latitude":47.763949957,"height":700.00},{"longitude":-102.3613165489,"latitude":47.7605009139,"height":700.00},{"longitude":-102.3596946353,"latitude":47.75705185,"height":700.00},{"longitude":-102.3580729277,"latitude":47.7536027654,"height":700.00},{"longitude":-102.356451426,"latitude":47.7501536601,"height":700.00},{"longitude":-102.3548301302,"latitude":47.746704534,"height":700.00},{"longitude":-102.3532090402,"latitude":47.7432553873,"height":700.00},{"longitude":-102.351588156,"latitude":47.7398062199,"height":700.00},{"longitude":-102.3499674775,"latitude":47.7363570318,"height":700.00},{"longitude":-102.3483470046,"latitude":47.732907823,"height":700.00},{"longitude":-102.3467267374,"latitude":47.7294585936,"height":700.00},{"longitude":-102.3451066756,"latitude":47.7260093435,"height":700.00},{"longitude":-102.3434868194,"latitude":47.7225600727,"height":700.00},{"longitude":-102.3418671686,"latitude":47.7191107813,"height":700.00},{"longitude":-102.3402477231,"latitude":47.7156614693,"height":700.00},{"longitude":-102.338628483,"latitude":47.7122121367,"height":700.00},{"longitude":-102.3370094481,"latitude":47.7087627834,"height":700.00},{"longitude":-102.3353906184,"latitude":47.7053134095,"height":700.00},{"longitude":-102.3337719938,"latitude":47.7018640151,"height":700.00},{"longitude":-102.3321535744,"latitude":47.6984146,"height":700.00},{"longitude":-102.3305353599,"latitude":47.6949651644,"height":700.00},{"longitude":-102.3289173504,"latitude":47.6915157081,"height":700.00},{"longitude":-102.3272995459,"latitude":47.6880662314,"height":700.00},{"longitude":-102.3256819462,"latitude":47.684616734,"height":700.00},{"longitude":-102.3240645512,"latitude":47.6811672161,"height":700.00},{"longitude":-102.3224473611,"latitude":47.6777176777,"height":700.00},{"longitude":-102.3208303756,"latitude":47.6742681187,"height":700.00},{"longitude":-102.3192135947,"latitude":47.6708185392,"height":700.00},{"longitude":-102.3175970184,"latitude":47.6673689392,"height":700.00},{"longitude":-102.3159806466,"latitude":47.6639193187,"height":700.00},{"longitude":-102.3143644793,"latitude":47.6604696777,"height":700.00},{"longitude":-102.3127485164,"latitude":47.6570200162,"height":700.00},{"longitude":-102.3111327578,"latitude":47.6535703342,"height":700.00},{"longitude":-102.3095172035,"latitude":47.6501206317,"height":700.00},{"longitude":-102.3079018534,"latitude":47.6466709087,"height":700.00},{"longitude":-102.3062867075,"latitude":47.6432211653,"height":700.00},{"longitude":-102.3046717657,"latitude":47.6397714015,"height":700.00},{"longitude":-102.303057028,"latitude":47.6363216172,"height":700.00},{"longitude":-102.3014424943,"latitude":47.6328718125,"height":700.00},{"longitude":-102.2998281645,"latitude":47.6294219873,"height":700.00},{"longitude":-102.2982140386,"latitude":47.6259721417,"height":700.00},{"longitude":-102.2966001166,"latitude":47.6225222758,"height":700.00},{"longitude":-102.2949863983,"latitude":47.6190723894,"height":700.00},{"longitude":-102.2933728838,"latitude":47.6156224826,"height":700.00},{"longitude":-102.2917595729,"latitude":47.6121725554,"height":700.00},{"longitude":-102.2901464656,"latitude":47.6087226079,"height":700.00},{"longitude":-102.2885335619,"latitude":47.60527264,"height":700.00},{"longitude":-102.2869208616,"latitude":47.6018226517,"height":700.00},{"longitude":-102.2853083648,"latitude":47.5983726431,"height":700.00},{"longitude":-102.2836960714,"latitude":47.5949226141,"height":700.00},{"longitude":-102.2820839813,"latitude":47.5914725648,"height":700.00},{"longitude":-102.2804720945,"latitude":47.5880224952,"height":700.00},{"longitude":-102.2788604109,"latitude":47.5845724052,"height":700.00},{"longitude":-102.2772489304,"latitude":47.581122295,"height":700.00},{"longitude":-102.2756376531,"latitude":47.5776721644,"height":700.00},{"longitude":-102.2740265787,"latitude":47.5742220135,"height":700.00},{"longitude":-102.2724157074,"latitude":47.5707718424,"height":700.00},{"longitude":-102.270805039,"latitude":47.567321651,"height":700.00},{"longitude":-102.2691945735,"latitude":47.5638714393,"height":700.00},{"longitude":-102.2675843108,"latitude":47.5604212073,"height":700.00},{"longitude":-102.2659742508,"latitude":47.5569709551,"height":700.00},{"longitude":-102.2643643936,"latitude":47.5535206827,"height":700.00},{"longitude":-102.262754739,"latitude":47.55007039,"height":700.00},{"longitude":-102.261145287,"latitude":47.546620077,"height":700.00},{"longitude":-102.2595360375,"latitude":47.5431697439,"height":700.00},{"longitude":-102.2579269905,"latitude":47.5397193905,"height":700.00},{"longitude":-102.256318146,"latitude":47.536269017,"height":700.00},{"longitude":-102.2547095038,"latitude":47.5328186232,"height":700.00},{"longitude":-102.2531010639,"latitude":47.5293682093,"height":700.00},{"longitude":-102.2514928263,"latitude":47.5259177751,"height":700.00},{"longitude":-102.2498847908,"latitude":47.5224673208,"height":700.00},{"longitude":-102.24766705339457,"latitude":47.51841114157921,"height":700.00},{"longitude":-102.24766705339457,"latitude":47.51841114157921,"height":665.00}]'
+);
+// Create a point for each.
+for (let i = 0; i < flightData.length; i++) {
+  const dataPoint = flightData[i];
+
+  viewer.entities.add({
+    description: `Location: (${dataPoint.longitude}, ${dataPoint.latitude}, ${dataPoint.height})`,
+    position: Cesium.Cartesian3.fromDegrees(dataPoint.longitude, dataPoint.latitude, dataPoint.height),
+    point: { pixelSize: .05, color: Cesium.Color.BLUE }
+  });
+}
+    const timeStepInSeconds = 30;
+const totalSeconds = timeStepInSeconds * (flightData.length - 1);
+const start = Cesium.JulianDate.fromIso8601("2020-03-09T23:10:00Z");
+const stop = Cesium.JulianDate.addSeconds(start, totalSeconds, new Cesium.JulianDate());
+viewer.clock.startTime = start.clone();
+viewer.clock.stopTime = stop.clone();
+viewer.clock.currentTime = start.clone();
+viewer.timeline.zoomTo(start, stop);
+// Speed up the playback speed 5x.
+viewer.clock.multiplier = 5;
+// Start playing the scene.
+viewer.clock.shouldAnimate = true;
+
+// The SampledPositionedProperty stores the position and timestamp for each sample along the radar sample series.
+const positionProperty = new Cesium.SampledPositionProperty();
+
+for (let i = 0; i < flightData.length; i++) {
+  const dataPoint = flightData[i];
+
+  // Declare the time for this individual sample and store it in a new JulianDate instance.
+  const time = Cesium.JulianDate.addSeconds(start, i * timeStepInSeconds, new Cesium.JulianDate());
+  const position = Cesium.Cartesian3.fromDegrees(dataPoint.longitude, dataPoint.latitude, dataPoint.height);
+  // Store the position along with its timestamp.
+  // Here we add the positions all upfront, but these can be added at run-time as samples are received from a server.
+  positionProperty.addSample(time, position);
+
+  viewer.entities.add({
+    description: `Location: (${dataPoint.longitude}, ${dataPoint.latitude}, ${dataPoint.height})`,
+    position: position,
+    point: { pixelSize: 5, color: Cesium.Color.BLUE }
+  });
+}
+// STEP 6 CODE (drone entity)
+    async function loadModel() {
+      // Load the glTF model from Cesium ion.
+      const airplaneUri = await Cesium.IonResource.fromAssetId(2456346);
+      const airplaneEntity = viewer.entities.add({
+        availability: new Cesium.TimeIntervalCollection([ new Cesium.TimeInterval({ start: start, stop: stop }) ]),
+        position: positionProperty,
+        // Attach the 3D model instead of the green point.
+        model: { uri: airplaneUri },
+        // Automatically compute the orientation from the position.
+        orientation: new Cesium.VelocityOrientationProperty(positionProperty),    
+        path: new Cesium.PathGraphics({ width: 20, material: new Cesium.PolylineGlowMaterialProperty({
+      glowPower: 0.01,
+      color: Cesium.Color.GREEN, })}),
+      });
+     
+      viewer.trackedEntity = airplaneEntity;
+    }
+
+    loadModel();
+
+const entityPath = viewer.entities.add({
+  position: positionProperty,
+  name: "path",
+  path: {
+    show: true,
+    leadTime: 0,
+    trailTime: 1,
+    width: 20,
+    resolution: 1,
+    material: new Cesium.PolylineGlowMaterialProperty({
+      glowPower: 0.3,
+      taperPower: 0.3,
+      color: Cesium.Color.PALEGOLDENROD,
+    }),
+  },
+});
+  </script>
+</body>
+</html>
