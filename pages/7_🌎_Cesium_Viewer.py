@@ -1,5 +1,5 @@
 import streamlit as st
-import common
+from common import cesium_to_streamlit
 
 def main():
     st.title("Interactive Cesium Globe Viewer")
