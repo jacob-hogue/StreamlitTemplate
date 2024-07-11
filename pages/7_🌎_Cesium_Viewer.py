@@ -6,7 +6,7 @@ def main():
 
     st.write("Welcome to the Cesium Globe Viewer! You can interact with the globe below.")
 
-    cesium_to_streamlit(index.html)
+    cesium_to_streamlit('index.html')
 
     st.write("Use your mouse to interact with the globe:")
     st.write("- Left-click and drag to rotate")
